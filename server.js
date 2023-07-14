@@ -3,7 +3,7 @@
 
 require('./config/DbConnect')
 
-// const User = require("./model/User")
+const User = require("./model/User")
 
 const TelegramBot = require('node-telegram-bot-api');
 
@@ -18,7 +18,7 @@ const bot = new TelegramBot(token, { polling: true, baseUrl: baseUrl });
 
 // Define your bot's commands
 const commands = [
-    { command: '/start', description: 'Start the bot' },
+    { command: '/category', description: 'ساخت و ایجاد دستهبندی' },
     { command: '/help', description: 'Get help' },
     { command: '/about', description: 'About the bot' },
 
@@ -32,18 +32,56 @@ bot.setMyCommands(commands);
 
 bot.onText(/\/start/, (msg) => {
     const chatId = msg.chat.id;
-    bot.sendMessage(chatId, 'Welcome to my bot!');
+    const user = new User({chatId})
+    user.save().then(() => {
+        bot.sendMessage(chatId, 'Welcome to my bot!');
+    }).catch(err => {
+        bot.sendMessage(chatId, 'user already exists!');
+    })
 });
+
+
+
+
+bot.onText(/\/category/, (msg) => {
+    const chatId = msg.chat.id;
+
+    bot.sendMessage(chatId, "select the category" , {
+        reply_markup : {
+            keyboard: [['/create_category'] , ['لیست دسته بندی ها'] ],
+            resize_keyboard: true ,
+
+        }
+    });
+});
+
+
+
+
+
 // Listen for the /help command
 bot.onText(/\/help/, (msg) => {
     const chatId = msg.chat.id;
-    bot.sendMessage(chatId, 'How can I help you?');
+    bot.sendMessage(chatId, 'How can I help you?' , {
+        reply_markup : {
+            remove_keyboard: true
+        }
+    });
 });
 
 // Listen for the /about command
 bot.onText(/\/about/, (msg) => {
     const chatId = msg.chat.id;
-    bot.sendMessage(chatId, 'This bot was created by me!');
+    bot.sendMessage(chatId, 'This bot was created by me!' , {
+        reply_markup : {
+            remove_keyboard: true
+        }
+    });
 });
+
+
+const actions = {
+    "ساخت دسته بندی" : (msg) => console.log("test")
+}
 
 // Listen for the /restart command
