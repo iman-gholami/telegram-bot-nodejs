@@ -3,6 +3,8 @@
 
 require('./config/DbConnect')
 
+const Category = require('./model/Category')
+
 const User = require("./model/User")
 
 const TelegramBot = require('node-telegram-bot-api');
@@ -18,7 +20,7 @@ const bot = new TelegramBot(token, { polling: true, baseUrl: baseUrl });
 
 // Define your bot's commands
 const commands = [
-    { command: '/category', description: 'Create category' },
+    { command: '/category', description: 'ساخته دسته بندی' },
     { command: '/help', description: 'Get help' },
     { command: '/about', description: 'About the bot' },
 
@@ -59,10 +61,20 @@ bot.onText(/ساخته دسته بندی/, (msg) => {
 
     bot.sendMessage(chatId, "نام دسته بندی مورد نظر خود را وارد کنید :");
 
-
-
-
+    // Set a new listener to wait for the user's response
+    bot.once("message", (msg) => {
+        const categoryName = msg.text;
+        // Save the category to the database or other source
+        // For example, you can create a new category object and save it to the database
+        const category = new Category({ name: categoryName });
+        category.save().then(() => {
+            bot.sendMessage(chatId, `دسته بندی "${categoryName}" با موفقیت ایجاد شد.`);
+        }).catch((err) => {
+            bot.sendMessage(chatId, `خطا در ایجاد دسته بندی: ${err}`);
+        });
+    });
 });
+
 
 
 
