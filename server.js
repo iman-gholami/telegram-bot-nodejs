@@ -18,7 +18,7 @@ const bot = new TelegramBot(token, { polling: true, baseUrl: baseUrl });
 
 // Define your bot's commands
 const commands = [
-    { command: '/category', description: 'ساخت و ایجاد دستهبندی' },
+    { command: '/category', description: 'Create category' },
     { command: '/help', description: 'Get help' },
     { command: '/about', description: 'About the bot' },
 
@@ -46,15 +46,23 @@ bot.onText(/\/start/, (msg) => {
 bot.onText(/\/category/, (msg) => {
     const chatId = msg.chat.id;
 
-    bot.sendMessage(chatId, "select the category" , {
-        reply_markup : {
-            keyboard: [['/create_category'] , ['لیست دسته بندی ها'] ],
-            resize_keyboard: true ,
-
+    bot.sendMessage(chatId, "Select the category", {
+        reply_markup: {
+            keyboard: [['ساخته دسته بندی'], ['لیست تمام دسته بندی ها']],
+            resize_keyboard: true,
         }
     });
 });
 
+bot.onText(/ساخته دسته بندی/, (msg) => {
+    const chatId = msg.chat.id;
+
+    bot.sendMessage(chatId, "نام دسته بندی مورد نظر خود را وارد کنید :");
+
+
+
+
+});
 
 
 
@@ -80,8 +88,6 @@ bot.onText(/\/about/, (msg) => {
 });
 
 
-const actions = {
-    "ساخت دسته بندی" : (msg) => console.log("test")
-}
+
 
 // Listen for the /restart command
